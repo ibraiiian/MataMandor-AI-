@@ -28,8 +28,19 @@ export default function CaraKerja() {
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23000' stroke-width='0.5'%3E%3Cpath d='M0 0h40v40H0z'/%3E%3C/g%3E%3C/svg%3E")`,
             }}
           />
+          
+          {/* Right Building Sketch Background */}
+          <div 
+            className="absolute right-0 top-0 w-full md:w-[600px] lg:w-[800px] h-full opacity-[0.15] pointer-events-none"
+            style={{
+              backgroundImage: 'url(/bg-crane-right.png)',
+              backgroundSize: 'contain',
+              backgroundPosition: 'right bottom',
+              backgroundRepeat: 'no-repeat',
+            }}
+          />
 
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
             <div className="max-w-3xl mb-16">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-neutral-50 border border-neutral-100 text-[13px] font-semibold text-neutral-500 mb-6">
                 Alur Kerja AI Estimator
@@ -206,8 +217,19 @@ export default function CaraKerja() {
         </section>
 
         {/* ========== WHY EFFECTIVE SECTION ========== */}
-        <section className="py-16 lg:py-24 border-b border-border bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="relative py-16 lg:py-24 border-b border-border bg-white overflow-hidden">
+          {/* Left Building Sketch Background */}
+          <div 
+            className="absolute left-0 bottom-0 w-full md:w-[500px] lg:w-[700px] h-[150%] opacity-[0.12] pointer-events-none"
+            style={{
+              backgroundImage: 'url(/bg-crane-left.png)',
+              backgroundSize: 'contain',
+              backgroundPosition: 'left bottom',
+              backgroundRepeat: 'no-repeat',
+            }}
+          />
+
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-[16px] font-bold text-foreground mb-8">
               Kenapa Proses Ini Efektif?
             </h2>
