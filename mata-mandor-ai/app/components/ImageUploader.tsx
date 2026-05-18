@@ -1,16 +1,23 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { CloudUpload, ShieldCheck, Image as ImageIcon, X } from "lucide-react";
+import { CloudUpload, ShieldCheck, Image as ImageIcon, X, Sparkles, Loader2 } from "lucide-react";
 import Toast from "./Toast";
 
 const ACCEPTED_FORMATS = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
 
-export default function ImageUploader() {
+interface ImageUploaderProps {
+  onAnalyze?: (base64: string, mimeType: string, previewUrl: string) => void;
+  isAnalyzing?: boolean;
+}
+
+export default function ImageUploader({ onAnalyze, isAnalyzing = false }: ImageUploaderProps) {
   const [dragOver, setDragOver] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [base64Data, setBase64Data] = useState<string | null>(null);
+  const [fileMimeType, setFileMimeType] = useState<string | null>(null);
   const [toast, setToast] = useState({ visible: false, message: "" });
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -43,9 +50,15 @@ export default function ImageUploader() {
       if (!validateFile(file)) return;
 
       setFileName(file.name);
+      setFileMimeType(file.type);
+
       const reader = new FileReader();
       reader.onload = (e) => {
-        setPreview(e.target?.result as string);
+        const dataUrl = e.target?.result as string;
+        setPreview(dataUrl);
+        // Extract base64 data (remove the data:image/...;base64, prefix)
+        const base64 = dataUrl.split(",")[1];
+        setBase64Data(base64);
       };
       reader.readAsDataURL(file);
     },
@@ -73,7 +86,15 @@ export default function ImageUploader() {
   const clearPreview = () => {
     setPreview(null);
     setFileName(null);
+    setBase64Data(null);
+    setFileMimeType(null);
     if (inputRef.current) inputRef.current.value = "";
+  };
+
+  const handleAnalyze = () => {
+    if (base64Data && fileMimeType && preview && onAnalyze) {
+      onAnalyze(base64Data, fileMimeType, preview);
+    }
   };
 
   return (
@@ -127,13 +148,38 @@ export default function ImageUploader() {
                   e.stopPropagation();
                   clearPreview();
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                disabled={isAnalyzing}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors disabled:opacity-50"
                 aria-label="Hapus gambar"
               >
                 <X className="w-3.5 h-3.5" />
                 Hapus
               </button>
             </div>
+
+            {/* Analyze Button */}
+            {onAnalyze && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAnalyze();
+                }}
+                disabled={isAnalyzing}
+                className="w-full mt-3 flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-[#111111] text-white text-[14px] font-semibold hover:bg-neutral-800 transition-all duration-200 shadow-md disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {isAnalyzing ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Sedang menganalisis...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    Analisis Sekarang
+                  </>
+                )}
+              </button>
+            )}
           </div>
         ) : (
           /* Upload State */

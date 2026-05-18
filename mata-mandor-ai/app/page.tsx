@@ -1,7 +1,14 @@
+"use client";
+
+import { useState, useCallback } from "react";
 import Navbar from "./components/Navbar";
 import ImageUploader from "./components/ImageUploader";
 import SummaryCard from "./components/SummaryCard";
 import BoMTable from "./components/BoMTable";
+import AnalysisLoading from "./components/AnalysisLoading";
+import AnalysisResultPanel from "./components/AnalysisResult";
+import Toast from "./components/Toast";
+import { AnalysisResult } from "@/lib/download";
 import {
   Sparkles,
   Download,
@@ -13,6 +20,60 @@ import {
 } from "lucide-react";
 
 export default function Home() {
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [toast, setToast] = useState({ visible: false, message: "" });
+
+  const handleAnalyze = useCallback(
+    async (base64: string, mimeType: string, preview: string) => {
+      setIsAnalyzing(true);
+      setPreviewUrl(preview);
+      setResult(null);
+
+      try {
+        const response = await fetch("/api/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: base64, mimeType }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          setToast({ visible: true, message: data.error || "Gagal menganalisis gambar." });
+          setIsAnalyzing(false);
+          return;
+        }
+
+        // Check if image is valid according to Gemini
+        if (data.is_valid_image === false) {
+          setToast({
+            visible: true,
+            message: data.error_message || "Gambar tidak valid. Silakan unggah foto ruangan/bangunan.",
+          });
+          setIsAnalyzing(false);
+          return;
+        }
+
+        setResult(data as AnalysisResult);
+      } catch {
+        setToast({
+          visible: true,
+          message: "Terjadi kesalahan jaringan. Silakan coba lagi.",
+        });
+      } finally {
+        setIsAnalyzing(false);
+      }
+    },
+    []
+  );
+
+  const handleReset = useCallback(() => {
+    setResult(null);
+    setPreviewUrl(null);
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen bg-background" id="beranda">
       <Navbar />
@@ -52,7 +113,10 @@ export default function Home() {
                 </div>
 
                 {/* Image Uploader */}
-                <ImageUploader />
+                <ImageUploader
+                  onAnalyze={handleAnalyze}
+                  isAnalyzing={isAnalyzing}
+                />
 
                 {/* Gemini Branding */}
                 <div className="space-y-3 pt-2">
@@ -72,66 +136,83 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Right Column: Example Result */}
+              {/* Right Column: Result or Example */}
               <div className="lg:sticky lg:top-24">
-                <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
-                  {/* Header */}
-                  <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-                    <h2 className="text-[14px] font-bold text-foreground">
-                      Contoh Hasil Analisis
-                    </h2>
-                    <X className="w-4 h-4 text-neutral-300" strokeWidth={2} />
-                  </div>
+                {isAnalyzing ? (
+                  /* Loading State */
+                  <AnalysisLoading />
+                ) : result && previewUrl ? (
+                  /* Real Result */
+                  <AnalysisResultPanel
+                    result={result}
+                    previewUrl={previewUrl}
+                    onReset={handleReset}
+                  />
+                ) : (
+                  /* Static Example */
+                  <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
+                    {/* Header */}
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+                      <h2 className="text-[14px] font-bold text-foreground">
+                        Contoh Hasil Analisis
+                      </h2>
+                      <X
+                        className="w-4 h-4 text-neutral-300"
+                        strokeWidth={2}
+                      />
+                    </div>
 
-                  <div className="p-5 md:p-6 space-y-8">
-                    {/* Sample Room Image + Summary */}
-                    <div className="flex flex-col sm:flex-row gap-5">
-                      {/* Room Image */}
-                      <div className="flex-1 rounded-xl overflow-hidden bg-neutral-100 min-h-[220px]">
-                        <img
-                          src="/sample-room.png"
-                          alt="Contoh foto ruangan unfinished"
-                          className="w-full h-full object-cover"
-                        />
+                    <div className="p-5 md:p-6 space-y-8">
+                      {/* Sample Room Image + Summary */}
+                      <div className="flex flex-col sm:flex-row gap-5">
+                        {/* Room Image */}
+                        <div className="flex-1 rounded-xl overflow-hidden bg-neutral-100 min-h-[220px]">
+                          <img
+                            src="/sample-room.png"
+                            alt="Contoh foto ruangan unfinished"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        {/* Summary Card */}
+                        <div className="shrink-0">
+                          <SummaryCard />
+                        </div>
                       </div>
-                      {/* Summary Card */}
-                      <div className="shrink-0">
-                        <SummaryCard />
+
+                      {/* Analysis Description */}
+                      <div>
+                        <h3 className="text-[14px] font-bold text-foreground mb-2">
+                          Analisis Ruangan
+                        </h3>
+                        <p className="text-[14px] text-neutral-600 leading-relaxed">
+                          Ruangan dengan kondisi unfinished, dinding bata merah,
+                          struktur beton terlihat. Diperlukan pekerjaan finishing
+                          dinding, lantai, dan plafon.
+                        </p>
+                      </div>
+
+                      {/* BoM Table */}
+                      <div>
+                        <h3 className="text-[14px] font-bold text-foreground mb-4">
+                          Kebutuhan Material
+                        </h3>
+                        <BoMTable />
+                      </div>
+
+                      {/* Disclaimer & Download */}
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t border-border/60">
+                        <p className="text-[12px] text-neutral-500 italic">
+                          * Hasil estimasi bersifat sementara dan dapat berbeda
+                          di lapangan.
+                        </p>
+                        <button className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#111111] text-white text-[13px] font-semibold hover:bg-neutral-800 transition-colors duration-200 shrink-0 shadow-md">
+                          <Download className="w-4 h-4" />
+                          Unduh Hasil
+                        </button>
                       </div>
                     </div>
-
-                    {/* Analysis Description */}
-                    <div>
-                      <h3 className="text-[14px] font-bold text-foreground mb-2">
-                        Analisis Ruangan
-                      </h3>
-                      <p className="text-[14px] text-neutral-600 leading-relaxed">
-                        Ruangan dengan kondisi unfinished, dinding bata merah,
-                        struktur beton terlihat. Diperlukan pekerjaan finishing
-                        dinding, lantai, dan plafon.
-                      </p>
-                    </div>
-
-                    {/* BoM Table */}
-                    <div>
-                      <h3 className="text-[14px] font-bold text-foreground mb-4">
-                        Kebutuhan Material
-                      </h3>
-                      <BoMTable />
-                    </div>
-
-                    {/* Disclaimer & Download */}
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t border-border/60">
-                      <p className="text-[12px] text-neutral-500 italic">
-                        * Hasil estimasi bersifat sementara dan dapat berbeda di lapangan.
-                      </p>
-                      <button className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#111111] text-white text-[13px] font-semibold hover:bg-neutral-800 transition-colors duration-200 shrink-0 shadow-md">
-                        <Download className="w-4 h-4" />
-                        Unduh Hasil
-                      </button>
-                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -202,6 +283,13 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Global Toast */}
+      <Toast
+        message={toast.message}
+        visible={toast.visible}
+        onClose={() => setToast({ visible: false, message: "" })}
+      />
     </div>
   );
 }
