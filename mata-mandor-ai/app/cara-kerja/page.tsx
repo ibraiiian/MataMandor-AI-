@@ -320,7 +320,7 @@ export default function CaraKerja() {
               <span className="text-[13px] font-bold">MataMandor AI</span>
             </div>
             <p className="text-[12px] text-neutral-500">
-              © 2024 MataMandor AI. Semua hak dilindungi.
+              © 2026 MataMandor AI. Semua hak dilindungi.
             </p>
             <div className="flex gap-6 text-[12px] text-neutral-500 font-medium">
               <a href="#" className="hover:text-foreground transition-colors">Kebijakan Privasi</a>
