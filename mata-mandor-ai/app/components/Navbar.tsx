@@ -8,8 +8,8 @@ import { Menu, X, Box, History } from "lucide-react";
 const navLinks = [
   { label: "Beranda", href: "/" },
   { label: "Cara Kerja", href: "/cara-kerja" },
-  { label: "Keunggulan", href: "/#keunggulan" },
-  { label: "Tentang", href: "/#tentang" },
+  { label: "Keunggulan", href: "/keunggulan" },
+  { label: "Tentang", href: "/tentang" },
 ];
 
 export default function Navbar() {
@@ -67,7 +67,7 @@ export default function Navbar() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-white text-sm font-semibold text-foreground hover:bg-muted transition-all duration-200 shadow-sm"
             >
               <History className="w-4 h-4" />
-              Riwayat Analisis
+              Coba Analisis
             </Link>
           </div>
 

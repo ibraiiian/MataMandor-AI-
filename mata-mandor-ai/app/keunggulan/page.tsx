@@ -25,15 +25,27 @@ export default function KeunggulanPage() {
       <main className="flex-1">
         {/* ========== HERO SECTION ========== */}
         <section className="relative overflow-hidden pt-12 lg:pt-20 pb-16 lg:pb-24">
-          {/* Faint building illustrations (simulated with CSS/SVG for now) */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.03]">
-            {/* Left building outline simulation */}
-            <div className="absolute top-10 -left-20 w-96 h-96 border-[1px] border-black rounded-lg transform rotate-6" />
-            <div className="absolute top-32 -left-10 w-80 h-96 border-[1px] border-black rounded-lg transform rotate-3" />
-            {/* Right building outline simulation */}
-            <div className="absolute top-20 -right-20 w-[30rem] h-96 border-[1px] border-black rounded-lg transform -rotate-3" />
-            <div className="absolute top-40 -right-10 w-96 h-96 border-[1px] border-black rounded-lg transform -rotate-6" />
-          </div>
+          {/* Left Building Sketch Background */}
+          <div 
+            className="absolute left-0 top-0 w-full md:w-[500px] lg:w-[700px] h-full opacity-[0.12] pointer-events-none"
+            style={{
+              backgroundImage: 'url(/bg-crane-left.png)',
+              backgroundSize: 'contain',
+              backgroundPosition: 'left bottom',
+              backgroundRepeat: 'no-repeat',
+            }}
+          />
+
+          {/* Right Building Sketch Background */}
+          <div 
+            className="absolute right-0 top-0 w-full md:w-[600px] lg:w-[800px] h-full opacity-[0.15] pointer-events-none"
+            style={{
+              backgroundImage: 'url(/bg-crane-right.png)',
+              backgroundSize: 'contain',
+              backgroundPosition: 'right bottom',
+              backgroundRepeat: 'no-repeat',
+            }}
+          />
 
           <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-neutral-200 shadow-sm text-[13px] font-semibold text-neutral-600">
