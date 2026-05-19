@@ -1,11 +1,12 @@
 import Navbar from "../components/Navbar";
+import Image from "next/image";
 import {
   Target,
   Flag,
   Heart,
   Users,
   FileText,
-  Box,
+  Crosshair,
   Timer,
   Home,
   HardHat,
@@ -117,7 +118,7 @@ export default function TentangPage() {
 
               <div className="flex items-center gap-4 lg:px-8">
                 <div className="shrink-0 w-14 h-14 bg-[#111111] rounded-[14px] flex items-center justify-center">
-                  <Box className="w-6 h-6 text-white" strokeWidth={1.5} />
+                  <Crosshair className="w-6 h-6 text-white" strokeWidth={1.5} />
                 </div>
                 <div>
                   <h3 className="text-[18px] font-extrabold text-foreground leading-tight">98%</h3>
@@ -210,20 +211,12 @@ export default function TentangPage() {
       <footer className="border-t border-border bg-white mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5 opacity-80">
-            <div className="w-6 h-6 rounded bg-foreground flex items-center justify-center">
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-              </svg>
-            </div>
+            <Image
+              src="/logo-mata-mandor-transparent.png"
+              alt="MataMandor AI"
+              width={24}
+              height={24}
+            />
             <div className="leading-tight">
               <span className="text-[13px] font-bold tracking-tight text-foreground block">
                 MataMandor AI

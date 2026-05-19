@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Box, History } from "lucide-react";
+import { Menu, X, History } from "lucide-react";
 
 const navLinks = [
   { label: "Beranda", href: "/" },
@@ -22,9 +22,13 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-foreground flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
-              <Box className="w-5 h-5 text-white" strokeWidth={2} />
-            </div>
+            <img
+              src="/logo-mata-mandor-transparent.png"
+              alt="MataMandor AI Logo"
+              width={36}
+              height={36}
+              className="transition-transform duration-200 group-hover:scale-105"
+            />
             <div className="leading-tight">
               <span className="text-base font-bold tracking-tight text-foreground">
                 MataMandor AI

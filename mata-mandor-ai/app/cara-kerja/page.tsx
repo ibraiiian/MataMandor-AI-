@@ -1,4 +1,5 @@
 import Navbar from "../components/Navbar";
+import Image from "next/image";
 import {
   CloudUpload,
   Box,
@@ -314,9 +315,12 @@ export default function CaraKerja() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-foreground rounded-md flex items-center justify-center">
-                <Box className="w-3.5 h-3.5 text-white" strokeWidth={2} />
-              </div>
+              <Image
+                src="/logo-mata-mandor-transparent.png"
+                alt="MataMandor AI"
+                width={24}
+                height={24}
+              />
               <span className="text-[13px] font-bold">MataMandor AI</span>
             </div>
             <p className="text-[12px] text-neutral-500">
