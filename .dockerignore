@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+npm-debug.log*
+
+# Build output
+.next
+
+# Version control
+.git
+.gitignore
+
+# Environment (will be set via Cloud Run env vars)
+.env
+.env.local
+.env*.local
+
+# IDE & OS
+.vscode
+.idea
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
+
+# Documentation & scripts (not needed in production)
+PRD.MD
+README.md
+AGENTS.md
+CLAUDE.md
+scripts/
+
+# Old subfolder remnants
+mata-mandor-ai/
